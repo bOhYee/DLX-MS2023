@@ -1,0 +1,36 @@
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.all;
+USE WORK.Globals.ALL;
+
+ENTITY XNOR2_GENERIC is
+	GENERIC(NBIT: integer := NumBit);
+
+	PORT(A, B:	IN std_logic_vector(NBIT-1 DOWNTO 0);
+		 Y:	OUT	std_logic_vector(NBIT-1 DOWNTO 0));
+END XNOR2_GENERIC;
+
+
+ARCHITECTURE STRUCTURAL of XNOR2_GENERIC IS
+
+	COMPONENT XOR2_GENERIC 
+		GENERIC(NBIT: integer := NumBit);
+
+		PORT(A, B:	IN std_logic_vector(NBIT-1 DOWNTO 0);
+			Y:	OUT	std_logic_vector(NBIT-1 DOWNTO 0));
+	END COMPONENT;
+
+	COMPONENT IV_GENERIC
+		GENERIC(NBIT: integer := NumBit);
+
+		PORT(A:	IN std_logic_vector(NBIT-1 DOWNTO 0);
+			Y:	OUT	std_logic_vector(NBIT-1 DOWNTO 0));
+	END COMPONENT;
+
+	SIGNAL C : std_logic_vector(NBIT-1 DOWNTO 0);
+
+BEGIN
+
+    XOR0 : XOR2_GENERIC GENERIC MAP (NBIT => NBIT) PORT MAP (A => A, B => B, Y => C);
+    IV0 : IV_GENERIC GENERIC MAP (NBIT => NBIT) PORT MAP (A => C, Y => Y);
+
+END STRUCTURAL;

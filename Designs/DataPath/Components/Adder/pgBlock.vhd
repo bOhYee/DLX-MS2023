@@ -1,0 +1,15 @@
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.ALL;
+
+ENTITY PG_BLOCK IS 
+	PORT(Ph, Gh, Pl, Gl: IN std_logic;
+		 Phl, Ghl : OUT std_logic);	
+END PG_BLOCK;
+
+ARCHITECTURE BEHAVIORAL OF PG_BLOCK IS
+BEGIN
+
+	Phl <= Ph AND Pl;
+	Ghl <= Gh OR (Ph AND Gl);
+	
+END BEHAVIORAL;

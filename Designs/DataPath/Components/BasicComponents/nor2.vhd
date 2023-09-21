@@ -1,0 +1,21 @@
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.all;
+USE WORK.Globals.ALL;
+
+ENTITY NOR2_GENERIC IS
+	GENERIC(NBIT: integer := NumBit);
+
+	PORT(A, B:	IN std_logic_vector(NBIT-1 DOWNTO 0);
+		 Y:	OUT	std_logic_vector(NBIT-1 DOWNTO 0));
+END NOR2_GENERIC;
+
+
+ARCHITECTURE BEHAVIORAL of NOR2_GENERIC IS
+BEGIN
+
+	NorProc: PROCESS(A, B)
+	BEGIN
+		Y <= NOT(A OR B);
+	END PROCESS NorProc;
+
+END BEHAVIORAL;

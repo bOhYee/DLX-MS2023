@@ -1,0 +1,90 @@
+#####################################################################
+# SCRIPT FOR SPEEDING UP and RECORDING the ALU SYNTHESIS
+#####################################################################
+for { set i 0 } { $i <= 1 } {incr i} {
+
+    #####################################################################
+    # Analyzing and checking vhdl netlist
+    # Here the analyze command is used for each file from bottom to top 
+    #####################################################################
+    analyze -library WORK -format vhdl {Designs/globals.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/and2.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/fa.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/half_adder.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/iv_generic.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/nand_generic.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/mux2to1.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/mux4to1.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/mux8to1.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/nand3.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/nand4.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/nor2.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/or2.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/rca.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/xor2.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BasicComponents/xnor2.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BoothMultiplier/Mult_encoder.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BoothMultiplier/Mult_mux.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BoothMultiplier/Mult_num_generation.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/BoothMultiplier/BOOTHMUL.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Divider/Divider.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Divider/DividerComponent.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/CarrySelectBlock.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/pgNetwork.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/pgNetworkCIn.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/pgBlock.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/generateBlock.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/overflow_gen.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/carry_gen.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/SumGeneratorBlock.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Adder/P4_ADDER.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Logic/Logics.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Register/fd.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Register/register_generic.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Shifter/shifter8pos.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Shifter/shifter_stage1.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Shifter/shifter_stage2.vhd}
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/Shifter/shifter.vhd}
+
+    analyze -library WORK -format vhdl {Designs/DataPath/Components/comparator.vhd}
+
+    if { $i == 0 } {
+        analyze -library WORK -format vhdl {Designs/DataPath/Components/ALU.vhd}
+    } else {
+        analyze -library WORK -format vhdl {Designs/DataPath/Components/ALU_no_opt_power.vhd}
+    }
+
+    ##############################################################
+    # Elaborating the top entity
+    elaborate ALU -architecture Structural
+    ##############################################################
+
+    # Clock periods to check
+    # Starting from unconstrained timing to 1 GHz, 500 MHz, 250 MHz, 100 MHz, 10 MHz, 1 MHz
+    set Period 8
+
+    # Define a clock to constrain the combinational network between registers
+    # Start with the timing provided by the unconstrained elaboration
+    create_clock -name "CLOCK" -period $Period clock
+
+    # Compile after setting the clock
+    compile -exact_map -ungroup_all
+    report_timing > "reports/time/DLX_time_opt_clock_{$i}_{$Period}.rpt"
+    report_area > "reports/area/DLX_area_opt_clock_{$i}_{$Period}.rpt"
+    report_power > "reports/power/DLX_power_opt_clock_{$i}_{$Period}.rpt"
+    
+    # Add the clock gating to techinique to increase power performances
+    compile -ungroup_all -map_effort high -power_effort high -area_effort high
+    report_timing > "reports/time/DLX_time_opt_max_clock_{$i}_{$Period}.rpt"
+    report_area > "reports/area/DLX_area_opt_max_clock_{$i}_{$Period}.rpt"
+    report_power > "reports/power/DLX_power_opt_max_clock_{$i}_{$Period}.rpt"
+
+    remove_design -designs
+}
