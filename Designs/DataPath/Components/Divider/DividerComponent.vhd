@@ -17,9 +17,9 @@ ARCHITECTURE Behavioral OF DividerComponent IS
     CONSTANT cyclesToPerform : integer := DIV_CYCLES; 
 
     SIGNAL isQ_neg, isR_neg : std_logic;
-    SIGNAL result_ready: std_logic;
-    SIGNAL A_positive, B_positive, Q_partial, R_partial : std_logic_vector(NBIT-1 DOWNTO 0);
-    SIGNAL enable, nextEnable : std_logic;
+    SIGNAL result_ready: std_logic := '0';
+    SIGNAL A_positive, B_positive, Q_partial, R_partial : std_logic_vector(NBIT-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL enable, nextEnable : std_logic := '0';
 
     COMPONENT Divider IS 
         GENERIC (NBIT: integer := NumBit);
@@ -46,7 +46,7 @@ BEGIN
     END PROCESS;
 
     setup : PROCESS (A, B, ALU_enable) 
-        VARIABLE A_positive_tmp, B_positive_tmp : std_logic_vector(NBIT-1 DOWNTO 0);
+        VARIABLE A_positive_tmp, B_positive_tmp : std_logic_vector(NBIT-1 DOWNTO 0) := (OTHERS => '0'); 
         
         BEGIN 
             IF (rising_edge(result_ready) AND result_ready = '1') OR ALU_enable = '0' THEN

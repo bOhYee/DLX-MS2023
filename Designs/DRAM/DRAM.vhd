@@ -36,6 +36,12 @@ BEGIN
                     CurrDRAM(i) <= (OTHERS => '0');
                 END LOOP;
                 
+                CurrDRAM(0) <= X"00000003";
+                CurrDRAM(1) <= X"00000007";
+                CurrDRAM(2) <= X"00000001";
+                CurrDRAM(3) <= X"00000004";
+                CurrDRAM(4) <= X"00000002";
+
                 write_ready <= '1';
             ELSE
                 -- When write enabled we compute the new values to be stored inside the DRAM

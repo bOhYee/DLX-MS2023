@@ -10,7 +10,8 @@ ENTITY ZEROS is
 END ZEROS;
 
 ARCHITECTURE Structural OF ZEROS IS
-    SIGNAL tmp : std_logic_vector(NBIT DOWNTO 0);
+
+    SIGNAL tmp : std_logic_vector(NBIT DOWNTO 0) := (OTHERS => '0');
     
 BEGIN
     

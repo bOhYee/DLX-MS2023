@@ -19,11 +19,11 @@ ARCHITECTURE Behavioral OF Divider IS
 
     CONSTANT cyclesToPerform : integer := DIV_CYCLES;  
 
-    SIGNAL tmpQ_pos, next_tmpQ_pos, tmpQ_neg, next_tmpQ_neg: std_logic_vector(NBIT-1 DOWNTO 0);
+    SIGNAL tmpQ_pos, next_tmpQ_pos, tmpQ_neg, next_tmpQ_neg: std_logic_vector(NBIT-1 DOWNTO 0) := (OTHERS => '0');
     SIGNAL counter, nextCounter : integer;
-    SIGNAL next_result_ready, done, nextDone : std_logic;
-    SIGNAL tmp_r, next_tmp_r : std_logic_vector(2*NBIT-1 DOWNTO 0);
-    SIGNAL B_extended_s : std_logic_vector(2*NBIT-1 DOWNTO 0); -- Just for test reasons
+    SIGNAL next_result_ready, done, nextDone : std_logic := '0';
+    SIGNAL tmp_r, next_tmp_r : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL B_extended_s : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0'); -- Just for test reasons
 
 BEGIN     
     setup: PROCESS(CK)
@@ -51,8 +51,8 @@ BEGIN
         END PROCESS;    
     
     division: PROCESS(enable, tmp_r, tmpQ_pos, tmpQ_neg, counter)
-        VARIABLE R_tmp : std_logic_vector(2*NBIT-1 DOWNTO 0);
-        VARIABLE B_extended : std_logic_vector(2*NBIT-1 DOWNTO 0);
+        VARIABLE R_tmp : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0');
+        VARIABLE B_extended : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0');
         
         BEGIN
         R_tmp := (OTHERS => '0');
@@ -105,9 +105,9 @@ BEGIN
         END PROCESS;
         
     result : PROCESS(done, enable)
-    VARIABLE temporary_q : std_logic_vector(NBIT-1 DOWNTO 0);
-    VARIABLE temporary_r : std_logic_vector(2*NBIT-1 DOWNTO 0);
-    VARIABLE B_extended : std_logic_vector(2*NBIT-1 DOWNTO 0);
+    VARIABLE temporary_q : std_logic_vector(NBIT-1 DOWNTO 0) := (OTHERS => '0');
+    VARIABLE temporary_r : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0');
+    VARIABLE B_extended : std_logic_vector(2*NBIT-1 DOWNTO 0) := (OTHERS => '0');
     
     BEGIN
         temporary_q := (OTHERS => '0');
