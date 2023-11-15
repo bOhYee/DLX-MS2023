@@ -1,5 +1,5 @@
 # DLX-MS2023
-Repository for the DLX project developed for the Microelectronic Systems course at Polytechnic of Turin in 2023. 
+Repository for the DLX project developed for the Microelectronics Systems course at Polytechnic of Turin during 2023. The processor was not only designed but also synthesized and a physical layout was produced. An analysis of these last two steps is performed inside the provided [report](Documentation/Documentation.pdf).
 
 ## Contents 
 - [Architecture overview](#architecture-overview)
@@ -19,7 +19,7 @@ To further increase the processor's throughput and to optimize its performances,
 - an **extended ISA**;
 - an almost fully **structural datapath**, to create more efficient designs, in terms of delay and area usages.
 
-A more detailed explanation on how it works can be found in "/Documentation", together with the schemes of some of the components developed.
+A more detailed explanation on how the CPU works can be found in the produced [report](Documentation/Documentation.pdf), together with the details and schematics of some of the components developed. Inside the `Documentation` folder, some schemes are also provided for better readability and can be opened by using the [Flowchart Maker web application](https://app.diagrams.net/).
 
 ## Supported instructions
 A list of all the supported instructions of the DLX microprocessor can be found in the next sections, to easily allow realizing test programs for checking the CPU behaviour. All of them work on 32-bits values and produce 32-bits results. `RS1`, `RS2` refer to the source registers while `RD` refers to the destination register. Their index can vary between 0 and 31 (i.e. `r0`, `r1`, ..., `r31`). `#Imm` indicates a 16-bits or 26-bits value, depending on the instruction, that can be inserted by the programmer inside the instruction, using a decimal or hexadecimal notation (other notations may be supported, based on the compiler used). For some instructions, this immediate value is sign-extended, while for others it is zero-extended. This is the case of unsigned instructions, denoted with a `u` letter, and the logic functions.
@@ -28,7 +28,9 @@ Two registers are treated differently from the rest:
  - `r0` contains always the `0` value;
  - `r31` is used to contain the value of the return address after a `jal` instruction has been processed.
 
-**NOTE**: Neither of these two rules has been forced at the hardware level but they need to be respected in order for the microprocessor to work.
+**NOTE**: Neither of these two rules have been forced at the hardware level but they need to be respected in order for the microprocessor to work.
+
+A custom compiler is required to correctly translate some of the instructions supported by the architecture. The correct `OPCODE` and `FUNCT` field values can be found inside the [Globals](/Designs/globals.vhd) package (`/Designs/globals.vhd`).
 
 ### R-type instructions
 | Operation | Description                                                                 | <div style="width: 200px">Example of usage </div> |
